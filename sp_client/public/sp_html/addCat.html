@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.0/css/bootstrap.min.css" integrity="sha384-SI27wrMjH3ZZ89r4o+fGIJtnzkAnFs3E4qz9DIYioCQ5l9Rd/7UAa8DHcaL8jkWt" crossorigin="anonymous">
+    <title>Add Category</title>
+</head>
+
+<body style="background-image: url(../image/krustykrabs.png);">
+
+
+
+
+    
+    <div id="addCatSection" style="margin-top: 100px;">
+        <h1 style="text-align: center;">ADD CAT</h1>
+        <form id="addCatForm" style="display: flex;flex-direction: column;">
+            <label for="catName"  style="text-align: center;">New Category Name: </label>
+            <input type="text" class="w-50 m-auto" id="catName">
+            <label for="catDesc" style="text-align: center;">Category Description: </label>
+            <input type="text" class="w-50"  id="catDesc" style="margin: auto;">
+            <br>
+            <br>
+            <button class="btn btn-danger w-50"type="submit" style="margin-top:10px;margin: auto;">INSERT A NEW BITCH</button>
+    </div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    const baseUrl = "http://localhost:8081";
+    const fuck = "http://localhost:3002"
+    const token = localStorage.getItem("token");
+    const loggedInUserID = parseInt(localStorage.getItem("loggedInUserID"));
+    const role = localStorage.getItem("role")
+
+    if (token == null) {
+        window.location.href = "/";
+        alert("missing token")
+    }
+    else if (isNaN(loggedInUserID)) {
+        window.location.href = "/";
+        alert("missing ID")
+    }
+    else if (role == null) {
+        window.location.href = "/";
+        alert("missing role")
+    }
+    else if (role.localeCompare("admin") == 1 || role.localeCompare("admin") == -1) {
+        window.location.href = "/";
+        alert("not admin")
+    } else {
+        axios.defaults.headers.common['Authorization'] = "Bearer " + token;
+    }
+
+
+
+
+    $("#addCatSection").submit((event) => {
+        event.preventDefault();
+        const catName = $("#catName").val();
+        const catDesc = $("#catDesc").val();
+
+        axios.get(`${baseUrl}/getCat`)
+            .then((response) => {
+                const catList = response.data;
+                var listArray = []
+                catList.forEach((list) => {
+                    listArray.push(list.cat_name.toLowerCase())
+                    console.log(listArray);
+                });
+                const requestBody = {
+                    catName: catName,
+                    catDesc: catDesc
+                };
+                
+                if (catName.length == 0) {
+                    alert("eh bodoh its category name is empty")
+
+                } else if (listArray.indexOf(catName.toLowerCase()) >= 0) {
+                    alert(`${catName} already exist`)
+
+                } else {
+                    axios.post(`${baseUrl}/insertCategory`, requestBody)
+                        .then((response) => {
+                            alert("sucessfully added new category bitch")
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                }
+
+
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    })
+
+
+</script>
+
+</html>

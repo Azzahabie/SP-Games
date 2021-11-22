@@ -1,0 +1,210 @@
+//ENDPOINT 1
+// app.get('/users/', function (req, res) {
+//     user.getAllUsers(function (err, result) {
+//         if (!err) {
+//             res.status(200).send(result);
+//         } else {
+//             res.status(500).send({
+//                 "Result": "Internal Server Error"
+//             });
+//         }
+//     });
+// });
+
+
+
+
+
+//ENDPOINT 3
+// app.get('/users/:id/', function (req, res) {
+//     const id = parseInt(req.params.id);
+//     user.getUserById(id, (err, result) => {
+//         if (result.length <= 0) { //gives err if id is not found 
+//             res.status(500).send({
+//                 "Result": "Internal Server Error"
+//             });
+//         }
+//         else if (!err) {
+//             res.status(200).send(result[0])
+//         } else {
+//             res.status(500).send({
+//                 "Result": "Internal Server Error"
+//             });
+//         }
+//     });
+// });
+
+//ENDPOINT 4
+// app.post('/category', (req, res) => {
+//     var { catName, catDesc } = req.body
+//     if (catName.length <= 0 || catDesc.length <= 0) { //checks if input is empty
+//         res.status(422).send({ "Error": "Name or description is empty" });
+//     } else {
+//         cat.insertNewCat(catName, catDesc, (err, result) => {
+//             if (!err) {
+//                 console.log(result);
+//                 res.status(204).send()
+//             } else if (err.code == "ER_DUP_ENTRY") {
+//                 res.status(422).send({ "Error": "Unprocessable Entity" });
+//             } else {
+//                 res.status(500).send({
+//                     "Result": "Internal Server Error"
+//                 });
+//             }
+//         });
+//     }
+// });
+
+//ENDPOINT 5
+// app.put('/category/:id', (req, res) => {
+//     const id = req.params.id
+//     cat.updateCatByID(req.body, id, (err, result) => {
+//         if (!err) {
+//             console.log(result);
+//             res.status(204).send()
+//         } else if (err.code == "ER_DUP_ENTRY") {
+//             res.status(422).send({ "Error": "Unprocessable Entity" });
+//         } else {
+//             res.status(500).send({
+//                 "Result": "Internal Server Error"
+//             });
+//         }
+//     })
+// });
+
+//ENDPOINT 6
+// app.post('/game', (req, res) => {
+//     var { title, description, price, platform, categoryid, year } = req.body
+//     games.insertNewGame(title, description, price, platform, categoryid, year, (err, result) => {
+//         if (!err) {
+//             res.status(201).send(result[0])
+//         } else if (err.code == "ER_DUP_ENTRY") {
+//             res.status(422).send({ "Error": "Unprocessable Entity" });
+//         } else {
+//             res.status(500).send({
+//                 "Result": "Internal Server Error"
+//             });
+//         }
+//     });
+// });
+
+//ENDPOINT 7
+// app.get('/games/:platform', (req, res) => {
+//     const platform = req.params.platform;
+//     var platforms = ["PC", "XBOX", "PS4"] //hardcode to check if platform exist in database
+//     if (platforms.includes(platform) == false) {
+//         res.status(422).send({ "Error": "Platform does not exist" });
+//     } else {
+//         games.getGamesByPlatform(platform, (err, result) => {
+//             if (!err) {
+//                 res.status(200).send(result)
+//             } else {
+//                 res.status(500).send({
+//                     "Result": "Internal Server Error"
+//                 });
+//             }
+//         });
+//     }
+// });
+
+//ENDPOINT 8
+
+//ENDPOINT 9
+
+
+//ENDPOINT 10
+// app.post('/user/:uid/game/:gid/review', (req, res) => {
+//     var { content, rating } = req.body
+//     const uid = req.params.uid;
+//     const gid = req.params.gid;
+//     review.insertNewReview(content, rating, uid, gid, (err, result) => {
+//         if (!err) {
+//             res.status(201).send(result[0])
+//         } else if (err.code == "ER_DUP_ENTRY") {
+//             res.status(422).send({ "Error": "Unprocessable Entity" });
+//         } else {
+//             res.status(500).send({
+//                 "Result": "Internal Server Error"
+//             });
+//         }
+//     });
+// });
+
+//ENDPOINT 11
+// app.get('/game/:id/review', (req, res) => {
+//     const id = req.params.id;
+//     review.getReviewById(id, (err, result) => {
+//         if (typeof result[0].title == `string`) { //checks if game has reviews
+//             res.status(200).send({
+//                 "Result": "No reviews found for " + result[0].title
+//             });
+//         }
+//         else if (!err) {
+//             res.status(200).send(result)
+//         } else {
+//             res.status(500).send({
+//                 "Result": "Internal Server Error"
+//             });
+//         }
+//     });
+// });
+
+
+
+
+//-----------------------------------------BONUS-SECTION----------------------------------------//
+
+
+// app.get('/Login', function (req, res) {
+//     fs.createReadStream('./websites/login.html').pipe(res)
+// });
+// app.get('/Register', function (req, res) {
+//     fs.createReadStream('./websites/register.html').pipe(res)
+// });
+// app.get('/Failed', function (req, res) {
+//     fs.createReadStream('./websites/failed.html').pipe(res)
+// });
+
+// app.get('/LoginSuccess', function(req,res){
+//     fs.createReadStream('./websites/success.html').pipe(res)
+// });
+
+//CREATES A NEW USER
+// app.post('/Register', (req, res) => {
+//     var { username, email, password, type, picurl } = req.body
+//     if (username == " " || email == " " || password == " " || type == "") {
+//         res.status(400).send("Form Input missing try again")
+//     } else {
+//         user.insertNewUser(username, email, password, type, picurl, (err, result) => {
+//             if (!err) {
+//                 res.status(201).send(result);
+//             } else {
+//                 res.status(500).send({
+//                     "Result": "Internal Server Error"
+//                 });
+//             }
+//         });
+//     }
+// });
+
+//LOGIN AS USER WHILE UPDATING LAST LOGIN
+// app.post('/Login', (req, res) => {
+//     var { username, password } = req.body
+//     user.checkLogin(username, password, (err, result) => { 
+//         if (result == null) {
+//             res.redirect('/Failed')
+//             //res.sendFile(path.join(__dirname, '..', 'websites', 'failed.html'))
+//         } else if (!err) {
+//             if (result[0].last_login == null) {
+//                 res.send(`Welcome new user ${username} `)
+//             } else {
+//                 res.send(`Welcome ${username} ` + "Last Login " + result[0].last_login)
+//             }
+//             //res.sendFile(path.join(__dirname,'..','websites','success.html'))
+//         } else {
+//             res.redirect('/Failed')
+//             //res.sendFile(path.join(__dirname, '..', 'websites', 'login.html'))
+//         }
+//     });
+// });
+

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/gamecontrol.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.0/css/bootstrap.min.css"
+        integrity="sha384-SI27wrMjH3ZZ89r4o+fGIJtnzkAnFs3E4qz9DIYioCQ5l9Rd/7UAa8DHcaL8jkWt" crossorigin="anonymous">
+    <title>Game Control</title>
+</head>
+
+<body>
+
+    <h1>GAMECONTROL</h1>
+    <div id="addGameSection">
+        <h2>ADD GAME</h2>
+        <form id="addGameForm" style="display: flex;flex-direction: column;">
+            <label for="gameTitle">Title: </label>
+            <input type="text" id="gameTitle" required>
+            <label for="gameDescription">Description: </label>
+            <input type="text" id="gameDescription" required>
+            <label for="gameCategory">Category: </label>
+            <select name="catList" id="categoryList" required>
+            </select>
+            <label for="gamePlatform">Platform: </label>
+            <select name="platforms" id="platformMenu" required>
+            </select>
+            <label for="gameYear">Year Released: </label>
+            <input type="number" id="gameYear" required>
+            <label for="gamePrice">Price: </label>
+            <input type="number" id="gamePrice" required>
+            <button type="submit">SUBMIT</button>
+        </form>
+    </div>
+
+    <div id="deleteGame">
+    </div>
+
+
+
+</body>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    const baseUrl = "http://localhost:8081";
+    const fuck = "http://localhost:3002"
+    const token = localStorage.getItem("token");
+    const loggedInUserID = parseInt(localStorage.getItem("loggedInUserID"));
+    const role = localStorage.getItem("role")
+
+    function delGame(id) {
+        axios.delete(`${baseUrl}/game/${id}`)
+            .then((response) => {
+                alert("deleted game")
+                location.reload()
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+
+    if (token == null) {
+        window.location.href = "/";
+        alert("missing token")
+    }
+    else if (isNaN(loggedInUserID)) {
+        window.location.href = "/";
+        alert("missing ID")
+    }
+    else if (role == null) {
+        window.location.href = "/";
+        alert("missing role")
+    }
+    else if (role.localeCompare("admin") == 1 || role.localeCompare("admin") == -1) {
+        window.location.href = "/";
+        alert("not admin")
+    } else {
+        axios.defaults.headers.common['Authorization'] = "Bearer " + token;
+    }
+
+    axios.get(`${baseUrl}/getCat`)
+        .then((response) => {
+            const catList = response.data;
+            catList.forEach((list) => {
+                const htmllist = `
+                <option value="${list.cat_id}">${list.cat_name}</option>
+                        `;
+                $("#categoryList").append(htmllist);
+            });
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    axios.get(`${baseUrl}/platform`)
+        .then((response) => {
+            const platformData = response.data;
+            platformData.forEach((platformData) => {
+                const postHtml = `
+                    <option>${platformData.platform}</option>
+                        `;
+                $("#platformMenu").append(postHtml);
+            });
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+
+    axios.get(`${baseUrl}/getOnlyGames`)
+        .then((response) => {
+            const gameList = response.data;
+
+            gameList.forEach((list) => {
+                const htmllist = `
+                <div id="game">
+                            <img src="../image${list.gameImgUrl}.jpg" style="width:400px;height:400px;"/>
+                            <h2>${list.title}</h2>
+                            <button onClick="delGame(${list.game_id})">Delete ${list.title}</button>
+                            <button><a href="${fuck}/editGame/${list.game_id}">Edit Item</a></button>
+                       </div> `;
+                $("#deleteGame").append(htmllist);
+            });
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+
+    $("#addGameSection").submit((event) => {
+        event.preventDefault();
+        const gameTitle = $("#gameTitle").val();
+        const gameDescription = $("#gameDescription").val();
+        const categoryList = $("#categoryList").val();
+        const platformMenu = $("#platformMenu").val();
+        const gameYear = $("#gameYear").val();
+        const gamePrice = $("#gamePrice").val();
+
+        const requestBody = {
+            title: gameTitle,
+            description: gameDescription,
+            price: gamePrice,
+            platform: platformMenu,
+            categoryid: categoryList,
+            year: gameYear,
+        };
+        axios.post(`${baseUrl}/insertGame`, requestBody)
+            .then((response) => {
+                alert("sucessfully added new game bitch")
+                location.reload()
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    })
+
+
+</script>
+
+</html>

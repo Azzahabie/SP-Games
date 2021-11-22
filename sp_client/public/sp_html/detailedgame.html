@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>detail game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,600;1,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/login.css" />
+    <script src="https://kit.fontawesome.com/474ee7e671.js"></script>
+
+</head>
+
+<body>
+    <div id="details">
+    </div>
+
+    <br>
+    <div id="writeReview">
+        <h1>Write a review for this game!</h1>
+        <form id="reviewForm">
+            <textarea id="newReview" name="newReview" rows="4" cols="50"> </textarea>
+            <label for="rating">Rating</label>
+            <select name="rating" id="rating">
+                <option selected disabled hidden>Select Rating</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+            </select>
+            <button type="submit">Submit</button>
+            <form>
+    </div>
+    <br>
+    <div id="avgReview">
+
+    </div>
+    <div id="reviews">
+        <h1>REVIEWS</h1>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    
+    <script>
+
+        const baseUrl = "http://localhost:8081";
+        const id = window.location.pathname;
+        const token = localStorage.getItem("token");
+        const loggedInUserID = parseInt(localStorage.getItem("loggedInUserID"));
+        var gameid = id.substring(6);
+        var selectedRating;
+
+
+        if (token === null || isNaN(loggedInUserID)) {
+            window.location.href = "/missing";
+        } else {
+
+
+            $("select").change(() => {
+                event.preventDefault()
+                selectedRating = document.getElementById("rating").value
+            })
+
+            axios.get(`${baseUrl}/game/${gameid}`)
+                .then((response) => {
+                    const games = response.data[0];
+                    console.log(games.gameImgUrl);
+
+                    const postHtml = `
+                        <div style=" display:flex; justify-content:center;flex-direction:row;flex-wrap:wrap;">
+                            <a href="/:${games.game_id}">
+                                <img src="../image/${games.gameImgUrl}.jpg" style="width:400px;height:400px;"/>
+                            </a>
+                            
+                            <div>
+                                <p id="title">${games.title}</p>
+                            </div>
+                            <div>
+                                ${games.price}
+                            </div>
+                        </div>
+                        `;
+
+                    $("#details").append(postHtml);
+
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+
+
+
+            axios.get(`${baseUrl}/review/${gameid}`)
+                .then((response) => {
+                    const review = response.data;
+                    review.forEach((review) => {
+                        if (review.user_id == loggedInUserID) {
+                            what = 100
+                        }
+                        const postHtml = `
+                    <h2 id="userReviewName">${review.username}</h2>
+                    <img src="../image/${review.picurl}.jpg" style="width:400px;height:400px;object-fit:cover"/>
+                    <p id="rating">${review.rating}<i class="fas fa-star"></i> </p>
+                    <p id="review"> ${review.content}</p>
+                    <p id="posted">posted on:   ${review.created_at}</p>
+                        
+                        `;
+                        $("#reviews").append(postHtml);
+                    });
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            //-----------------------------end of this func-------------------------------------------
+
+
+            axios.get(`${baseUrl}/getAverageReviewByID/${gameid}`)
+                .then((response) => {
+                    const getAvg = response.data;
+                    const avgRating = getAvg[0].rating;
+                    const postHtml = `
+                    <h2 id="avgReview">Average Stars: ${avgRating}</h2>
+                        `;
+
+                    $("#avgReview").append(postHtml);
+
+
+
+
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            //---------------------------------END OF THIS FUNC-----------------------------------
+            $("#reviewForm").submit((event) => {
+                event.preventDefault()
+                var didUserEdit = false
+                axios.get(`${baseUrl}/getUserFromReview/${gameid}`)
+                    .then((response) => {
+                        userReviewID = response.data
+
+                        for(var i=0;i<userReviewID.length;i++){
+                            if (loggedInUserID == userReviewID[i].user_id){
+                                var didUserEdit = true
+                                break
+                            }
+                        }
+
+                        console.log(didUserEdit);
+                        if (didUserEdit) {
+                            alert("found user")
+                            const x = document.getElementById("newReview").value
+                            const requestBody = {
+                                content: x,
+                                rating: selectedRating,
+                                uid: loggedInUserID,
+                                gid: gameid
+                            }
+                            axios.put(`${baseUrl}/updateReview`, requestBody)
+                                .then((response) => {
+                                    window.location.reload()
+
+                                })
+                           
+                        } else {
+                            alert("no user found")
+                            const x = document.getElementById("newReview").value
+                            const requestBody = {
+                                content: x,
+                                rating: selectedRating,
+                                uid: loggedInUserID,
+                                gid: gameid
+                            }
+                            axios.post(`${baseUrl}/newReview`, requestBody)
+                                .then((response) => {
+                                    window.location.reload()
+
+                                })
+                        }
+
+
+                    })
+
+
+
+
+            })
+        }
+
+
+    </script>
+</body>
+
+</html>

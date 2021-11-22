@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,600;1,300&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/Homepage.css">
+    <title>Homepage</title>
+</head>
+
+<body>
+
+    <div class="parent-hero">
+        <div class="hero-img">
+        </div>
+
+        <span class="hero-box">
+            <div class="hero-text">
+                <h1 class="welc-text heartbeat">WELCOME TO SP GAMES</h1>
+                <div class="hero-btn">
+                    <span class="login-btn">
+                        <button class="herobtn">
+                            <a href="/login">
+                                Login
+                            </a>
+                        </button>
+                    </span>
+                    <span class="register-btn">
+                        <button class="herobtn">
+                            <a href="/register">
+                                Register
+                            </a>
+                        </button>
+                    </span>
+                </div>
+        </span>
+    </div>
+    </div>
+    <nav class="navbar" id="navbar">
+        <ul class="nav-ul">
+
+
+        </ul>
+    </nav>
+
+    <div class="body-wrap">
+
+        <div class="filter-section">
+
+            <div class="search-section">
+                <form id="searchbar" class="search-form" autocomplete="off">
+                    <label for="searchbar" class="search-label">Search</label>
+                    <input type="text" id="filter" class="search-input">
+                    <button type="submit" class="search-btn">SEND IT!</button>
+                </form>
+            </div>
+
+            <div class="filter-bottom">
+                <form class="platform-section">
+                    <label for="platforms" class="platform-label">Filter Platform</label>
+                    <select name="platforms" id="platformMenu" class="platform-select">
+                    </select>
+                </form>
+
+                <div class="price-section">
+                    <form id="price-form" class="price-form" autocomplete="off">
+                        <label for="price" class="price-label">Poor People Option</label>
+                        <input class="price-input" type="text" name="price" id="price" placeholder="No Limit">
+                    </form>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="main-body">
+
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <img class="footer-img" src="../image/footer.png">
+        <h1 class="footer-title">SP GAMES</h1>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        const baseUrl = "http://localhost:8081";
+        const fuck = "http://localhost:3002"
+        const token = localStorage.getItem("token");
+        const loggedInUserID = parseInt(localStorage.getItem("loggedInUserID"));
+        const role = localStorage.getItem("role")
+        const username = localStorage.getItem("username")
+
+
+        if (token) {
+            console.log("set token to: " + token)
+            axios.defaults.headers.common['Authorization'] = "Bearer " + token;
+            if (role.localeCompare("admin") == 0) {
+                const liHtml = `
+                <li class="nav-li"><a class="nav-a admin">@${username}</a></li>
+                <li class="nav-li"><a class="nav-a admin" href="/adminPage">Admin Page</a></li>
+                <li style="float:right"><a id="logout">Logout</a></li>`;
+                $(".nav-ul").append(liHtml);
+            } else {
+                const liHtml = `<li class="nav-li"><a class="nav-a admin">@${username}</a></li>
+                <li style="float:right"><a id="logout">Logout</a></li>`;
+                $(".nav-ul").append(liHtml);
+            }
+
+        } else {
+            console.log("token is null")
+            axios.defaults.headers.common['Authorization'] = null;
+            const liHtml = `<li class="nav-li"><a class="nav-a" href="/login">Login</a></li>
+            <li class="nav-li"><a class="nav-a" href="/register">Register</a></li>`;
+            $(".nav-ul").append(liHtml);
+        }
+        axios.get(`${baseUrl}/getGames`)
+            .then((response) => {
+                const games = response.data;
+                games.forEach((games) => {
+                    const postHtml = `
+                        <div class="items">
+                        <a href="${fuck}/game/${games.game_id}"><img src="../image/${games.gameImgUrl}.jpg" class="item-img"></a>
+                        <div class="item-detail">
+                        <h1 class="item-title">${games.title}</h1>
+                        <h2 class="item-price">$${games.price}</h2>
+                        </div>
+                        </div>
+                        `;
+                    $(".main-body").append(postHtml);
+                });
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+
+
+        $("select").change(() => {
+            var clicked = document.getElementById("platformMenu")
+            console.log(clicked.value);
+            $(".main-body").empty()
+            axios.get(`${baseUrl}/getGameByPlatform/${clicked.value}`)
+                .then((response) => {
+                    const games = response.data;
+                    games.forEach((games) => {
+                        const postHtml = `
+                        <div class="items">
+                        <a href="${fuck}/game/${games.game_id}"><img src="../image/${games.gameImgUrl}.jpg" class="item-img"></a>
+                        <div class="item-detail">
+                        <h1 class="item-title">${games.title}</h1>
+                        <h2 class="item-price">$${games.price}</h2>
+                        </div>
+                        </div>
+                        `;
+                        $(".main-body").append(postHtml);
+                    });
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        })
+
+
+        axios.get(`${baseUrl}/platform`)
+            .then((response) => {
+                const platformData = response.data;
+                platformData.forEach((platformData) => {
+                    const postHtml = `
+                    <option>${platformData.platform}</option>
+                        `;
+
+                    $("#platformMenu").append(postHtml);
+                });
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+
+
+
+        $("#searchbar").submit((event) => {
+            // prevent page reload
+            event.preventDefault();
+            const searchFilter = $("#filter").val();
+            console.log(typeof searchFilter)
+            console.log(searchFilter.length);
+            if (searchFilter.length == 0) { //if search bar is empty reset page
+                $(".main-body").empty()
+                axios.get(`${baseUrl}/getGames`)
+                    .then((response) => {
+                        const games = response.data;
+                        games.forEach((games) => {
+                            const postHtml = `
+                            <div class="items">
+                        <a href="${fuck}/game/${games.game_id}"><img src="../image/${games.gameImgUrl}.jpg" class="item-img"></a>
+                        <div class="item-detail">
+                        <h1 class="item-title">${games.title}</h1>
+                        <h2 class="item-price">$${games.price}</h2>
+                        </div>
+                        </div>
+                        `;
+                            $(".main-body").append(postHtml);
+                        });
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+                //else load data 
+            } else {
+                axios.get(`${baseUrl}/getGamesBySearch/${searchFilter}`)
+
+                    .then((response) => {
+                        const games = response.data;
+                        $(".main-body").empty()
+                        console.log(games[0].title);
+                        games.forEach((games) => {
+                            const postHtml = `
+                            <div class="items">
+                        <a href="${fuck}/game/${games.game_id}"><img src="../image/${games.gameImgUrl}.jpg" class="item-img"></a>
+                        <div class="item-detail">
+                        <h1 class="item-title">${games.title}</h1>
+                        <h2 class="item-price">$${games.price}</h2>
+                        </div>
+                        </div>
+                        `;
+                            $(".main-body").append(postHtml);
+                        });
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            } // end of else
+        }); // end of submit by search bar
+
+
+        $("#price-form").submit((event) => {
+            // prevent page reload
+            event.preventDefault();
+            const price = parseInt($("#price").val());
+            console.log(typeof price)
+            console.log(price);
+            if (isNaN(price)) { //if search bar is empty reset page
+                $(".main-body").empty()
+                axios.get(`${baseUrl}/getGames`)
+                    .then((response) => {
+                        const games = response.data;
+                        games.forEach((games) => {
+                            const postHtml = `
+                            <div class="items">
+                        <a href="${fuck}/game/${games.game_id}"><img src="../image/${games.gameImgUrl}.jpg" class="item-img"></a>
+                        <div class="item-detail">
+                        <h1 class="item-title">${games.title}</h1>
+                        <h2 class="item-price">$${games.price}</h2>
+                        </div>
+                        </div>
+                        `;
+                            $(".main-body").append(postHtml);
+                        });
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+                //else load data 
+            } else {
+                axios.get(`${baseUrl}/getGamesByPrice/${price}`)
+                    .then((response) => {
+                        const games = response.data;
+                        $(".main-body").empty()
+                        games.forEach((games) => {
+                            const postHtml = `
+                            <div class="items">
+                        <a href="${fuck}/game/${games.game_id}"><img src="../image/${games.gameImgUrl}.jpg" class="item-img"></a>
+                        <div class="item-detail">
+                        <h1 class="item-title">${games.title}</h1>
+                        <h2 class="item-price">$${games.price}</h2>
+                        </div>
+                        </div>
+                        `;
+                            $(".main-body").append(postHtml);
+                        });
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
+        }); // end of submit by search bar
+
+        $("#whatdata").click(e => {
+            console.log(`\nhomepage button clicked \nUser id ${loggedInUserID} \ntoken ${token} \nrole ${role} `)
+            // console.log("test")
+            // console.log(user[0]);
+
+        })
+        $("#logout").click(e => {
+            const token = localStorage.getItem("token");
+            const loggedInUserID = parseInt(localStorage.getItem("loggedInUserID"));
+            console.log(`token\n ${token} user id ${loggedInUserID}`);
+            localStorage.removeItem("token");
+            localStorage.removeItem("loggedInUserID");
+            localStorage.removeItem("role")
+            window.location.reload();
+        });
+
+    </script>
+    <script>
+        window.onscroll = function () { myFunction() };
+        var navbar = document.getElementById("navbar");
+        var sticky = navbar.offsetTop;
+        function myFunction() {
+            if (window.pageYOffset >= sticky) {
+                console.log("somthing 1");
+            } else {
+                console.log("somth8bg 2");
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/adminpage.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.0/css/bootstrap.min.css" integrity="sha384-SI27wrMjH3ZZ89r4o+fGIJtnzkAnFs3E4qz9DIYioCQ5l9Rd/7UAa8DHcaL8jkWt" crossorigin="anonymous">
+    <title>Admin Page</title>
+</head>
+
+
+
+
+<body style="height:100%;background-image: url(../image/bikinibottom.png);">
+
+
+    <div style="display: flex; flex-direction: column; align-items: center;margin-top: 500px;" >
+        <button class="btn btn-danger m-2 w-25" style="padding: 20px;"><a href="/gameControl" class="text-white">Game Control Center</a></button>
+        <button class="btn btn-danger m-2 w-25" style="padding: 20px;"><a href="/addCat" class="text-white">Category Control Center</a></button>
+        <button class="btn btn-danger m-2 w-25" style="padding: 20px;"><a href="/adminRegister" class="text-white">Admin Register</a></button>
+    </div>
+
+
+</body>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    const token = localStorage.getItem("token");
+    const loggedInUserID = parseInt(localStorage.getItem("loggedInUserID"));
+    const role = localStorage.getItem("role")
+    if (token == null) {
+        window.location.href = "/";
+        alert("missing token")
+    }
+    else if (isNaN(loggedInUserID)) {
+        window.location.href = "/";
+        alert("missing ID")
+    }
+    else if (role == null) {
+        window.location.href = "/";
+        alert("missing role")
+    }
+    else if (role.localeCompare("admin") == 1 || role.localeCompare("admin") == -1 ) {
+        window.location.href = "/";
+        alert("not admin")
+    } else {
+        console.log("welcome");
+    }
+
+    
+
+</script>
+
+</html>

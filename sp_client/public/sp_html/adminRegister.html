@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,600;1,300&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/registerpage.css">
+    <title>register</title>
+</head>
+
+<body>
+
+    <div class="form-section">
+        <div class="hero-img">
+        </div>
+        <form id="register-form" class="hero-form">
+            <h1>Register</h1>
+            <div>
+                <label for="username">Username</label>
+                <input type="text" id="username" autocomplete="off" required>
+            </div>
+
+            <div>
+                <label for="email">Email</label>
+                <input type="email" id="email" autocomplete="off" required>
+            </div>
+            <div>
+                <label for="password">Password</label>
+                <input type="password" id="password" autocomplete="off" required>
+            </div>
+
+            <div class="role-section">
+                
+                    <div class="radio">
+                        <label class="role-label" for="cust">Member</label>
+                        <input class="role-input" type="radio"  name="role" value="member">
+                    </div>
+                    <div class="radio">
+                        <label class="role-label" for="male">Admin</label>
+                        <input class="role-input" type="radio"  name="role" value="admin" >
+                    </div>
+            </div>
+    
+        <div>
+            <label class="url-label" for="url">Picurl</label>
+            <input class="url-input" id="url" type="text" autocomplete="off">
+        </div>
+
+        <button class="reg-btn" type="submit">REGISTER </button>
+        </form>
+    </div>
+
+
+
+
+
+
+
+
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script>
+        const token = localStorage.getItem("token");
+        const loggedInUserID = parseInt(localStorage.getItem("loggedInUserID"));
+        const role = localStorage.getItem("role")
+        if (token == null) {
+            window.location.href = "/";
+            alert("missing token")
+        }
+        else if (isNaN(loggedInUserID)) {
+            window.location.href = "/";
+            alert("missing ID")
+        }
+        else if (role == null) {
+            window.location.href = "/";
+            alert("missing role")
+        }
+        else if (role.localeCompare("admin") == 1 || role.localeCompare("admin") == -1) {
+            window.location.href = "/";
+            alert("not admin")
+        } else {
+            axios.defaults.headers.common['Authorization'] = "Bearer " + token;
+        }
+
+        function myFunc(){
+            role = $("input[name=role]:checked").val()
+            alert(role)
+            alert("kiok")
+        }
+
+        $("#test").click(()=>{alert("test");role = $("input[name=role]:checked").val()
+            alert(role)})
+        const baseUrl = "http://localhost:8081";
+        $("#register-form").submit((event) => {
+            // prevent page reload
+            event.preventDefault();
+            const username = $("#username").val();
+            const email = $("#email").val();
+            const password = $("#password").val();
+            const role = $("input[name=role]:checked").val()
+            const url = $("#url").val()
+            const requestBody = {
+                username: username,
+                email: email,
+                password: password,
+                role: role,
+                url: url
+            };
+
+
+            axios.post(`${baseUrl}/adminReg/`, requestBody)
+                .then((response) => {
+                    alert("Successfully Registered")
+                    window.location.href = "/adminPage";
+                })
+                .catch((error) => {
+                    console.log(error);
+                    if (error.response.status === 400) {
+                        alert("Validation failed");
+                    } else {
+                        alert("Please Register Again");
+                    }
+                });
+        });
+    </script>
+</body>
+
+</html>

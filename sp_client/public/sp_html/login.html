@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sp login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,600;1,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/login.css" />
+</head>
+
+<body>
+    <div class="container">
+        <div class="hero-img">
+        </div>
+        <div class="hero-form">
+            <form id="login-form" >
+                <h1 class="form-title">Login</h1>
+                <div class="form-div-1">
+                    <label for="username" class="user-label">Username:</label>
+                    <input type="text" id="username" class="user-input" autocomplete="off">
+                </div>
+                <div class="form-div-2">
+                    <label for="password" class="pass-label">Password: </label>
+                    <input type="password" id="password" class="pass-input" autocomplete="off">
+                </div>
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+
+            <label for="register" class="label-register">Don't have an account?</label>
+            <button id="register" class="reg-btn"><a href="/register" class="reg-a">Register Here</a></button>
+        </div>
+    </div>
+
+
+
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        const baseUrl = "http://localhost:8081";
+        $("#login-form").submit((event) => {
+            // prevent page reload
+            event.preventDefault();
+
+            const username = $("#username").val();
+            const password = $("#password").val();
+            const requestBody = {
+                username: username,
+                password: password
+            };
+                .post(`${baseUrl}/login/`, requestBody) //where i can pass to my api backend
+                .then((response) => {
+                    const token = response.data.token;
+                    const loggedInUserID = response.data.user_id;
+                    const role = response.data.role
+                    console.log("role first pass" + response.data.role);
+                    localStorage.setItem("token", token);
+                    localStorage.setItem("loggedInUserID", loggedInUserID);
+                    localStorage.setItem("role", role)  
+                    localStorage.setItem("username",username)  
+                    console.log(`User id ${loggedInUserID} \ntoken ${token} \nrole ${role}?`) //push alert
+                    window.location.href = "/";
+                })
+                .catch((error) => {
+                    console.log("thisis error" + error);
+                    alert("Invalid Login Information")
+                });
+        });
+
+        $("#logout").click(e => {
+            const token = localStorage.getItem("token");
+            const loggedInUserID = parseInt(localStorage.getItem("loggedInUserID"));
+            console.log(`token\n ${token} user id ${loggedInUserID}`);
+            localStorage.removeItem("token");
+            localStorage.removeItem("loggedInUserID");
+        });
+    </script>
+</body>
+
+</html>

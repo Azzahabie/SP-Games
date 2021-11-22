@@ -1,0 +1,262 @@
+body {
+    background-image: url("../image/background.jpg");
+    font-family: 'Josefin Sans', sans-serif;
+}
+
+.game-section {
+    background-color: rgba(65, 63, 63, 0.664);
+    width: 90%;
+    margin: auto;
+    margin-top: 50px;
+    border-radius: 30px;
+}
+
+.split-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+}
+
+/* ----------------------------------------------LEFT SECTION0---------------------- */
+
+.left-section {
+    width: 800px;
+    height: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.left-img {
+    object-fit: cover;
+    width: 750px;
+    height: 500px;
+    border-radius: 10px;
+}
+
+/* --------------------------------------RIGHT SECTION----------------------------- */
+
+.right-section {
+    width: 800px;
+    height: 500px;
+    margin: auto;
+    border-radius: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 0.5fr 1fr 1fr;
+    grid-template-areas: " title title title title" "desc desc desc info" "desc desc desc info"
+}
+
+.right-title {
+    text-align: center;
+    font-size: 30px;
+    grid-area: title;
+    height: 50px;
+    color: whitesmoke;
+}
+
+.right-desc {
+    background-color: rgba(255, 255, 255, 0.212);
+    border: 1px solid gainsboro;
+    border-radius: 10px;
+    grid-area: desc;
+    padding: 5px 10px 5px 10px;
+    margin: 0.75rem;
+    max-height: 410px;
+    font-size: 24px;
+}
+
+.right-info {
+    background-color: rgba(255, 255, 255, 0.212);
+    border: 1px solid gainsboro;
+    margin: 0.75rem;
+    padding: 0px 10px 0px 10px;
+    border-radius: 10px;
+    text-align: center;
+    grid-area: info;
+    max-height: 420px;
+}
+
+/* -------------------------REVIEW SECTION-------------------------------- */
+
+.review-section {
+    background-color: rgba(65, 63, 63, 0.664);
+    width: 90%;
+    margin: auto;
+    margin-top: 50px;
+    color: white;
+    border-radius: 10px;
+}
+
+/* ----------------insert review */
+
+.insert-review {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.text-area {
+    width: 500px;
+    padding: 5px 15px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    transition: width 1s;
+}
+
+.text-area:focus {
+    width: 700px;
+    padding: 5px 15px;
+    margin: 8px 0;
+    display: inline-block;
+    outline: 1px solid red;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.rating-select {
+    display: block;
+    align-items: center;
+    margin: auto;
+    margin-bottom: 20px;
+    border: none;
+    width: 200px;
+    transition: width 1s ease, border 1s ease;
+}
+
+.rating-select:focus {
+    display: block;
+    align-items: center;
+    margin: auto;
+    margin-bottom: 20px;
+    border: 1px solid red;
+    width: 300px;
+}
+
+.submit-review {
+    background-color: rgb(255, 255, 255);
+    width: 150px;
+    height: 40px;
+    font-size: 18px;
+    border: none;
+    border-radius: 40px;
+    color: white;
+    background-color: rgb(131, 43, 43);
+    transition: background-color 0.4s, width 0.4s, height 0.4s;
+    display: block;
+    margin: auto;
+}
+
+.submit-review:hover {
+    background-color: rgb(253, 10, 10);
+    color: white;
+    width: 160px;
+    height: 50px;
+}
+
+/* ------------------user review section --------------*/
+
+.userReview-section {
+    width: 95%;
+    margin: auto;
+}
+
+.avg-rating {
+    background-color: rgba(148, 114, 228, 0.363);
+    color: white;
+    display: flex;
+    width: 400px;
+    height: 90px;
+    margin-left: 42.5px;
+    font-size: 16px;
+    padding-left: 10px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.avg-rating h1 {
+    margin-left: 10px;
+}
+
+.reviews {
+    display: flex;
+    align-items: center;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.user-pic {
+    width: 300px;
+    height: 300px;
+    border-radius: 200px;
+    object-fit: cover;
+}
+
+.user-review {
+    width: 85%;
+    height: 170px;
+    border-radius: 20px;
+    border: 1px solid black;
+    background-color: rgba(155, 155, 155, 0.418);
+    margin: 20px;
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    font-size: 20px;
+}
+
+/* ----------------NAVBAR--------------------------------- */
+
+.navbar {}
+
+.admin {}
+
+.nav-ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: rgba(15, 17, 24, 0.76);
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li {
+    float: left;
+}
+
+li a:hover {
+    background-color: #111;
+}
+
+.sticky {
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+
+#fieldset {
+    text-decoration: none;
+    border: none
+}
+
+.checked {
+    color: orange;
+  }

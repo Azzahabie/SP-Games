@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,600;1,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/detailedGames.css">
+    <title>detailed games</title>
+</head>
+
+<body>
+    <nav class="navbar" id="navbar">
+        <ul class="nav-ul">
+
+
+        </ul>
+    </nav>
+
+    <div class="game-section">
+
+        <!-- <div class="split-box">
+
+            <div class="left-section">
+                <img class="left-img" src="../image/cookoff.jpg">
+
+            </div>
+
+            <div class="right-section">
+
+                <div class="right-title">
+                    <h2>Cook Off</h2>
+                </div>
+
+                <div class="right-desc">
+                    <h3>Desc</h3>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias ipsa, similique quae nostrum
+                        doloremque magnam ratione? Asperiores in sunt, quasi, maiores sint nisi iure expedita quidem
+                        obcaecati eius odit exercitationem.</p>
+                </div>
+
+                <div class="right-info">
+                    <h4>Price</h4>
+                    <p>$00</p>
+                    <h4>Category</h4>
+                    <p>lame</p>
+                    <h4>Platform</h4>
+                    <p>PS4</p>
+                    <h4>Year Released</h4>
+                    <p>2000</p>
+                </div>
+            </div>
+        </div> -->
+
+    </div>
+
+    <div class="review-section">
+
+        <div class="insert-review" id="writeReview">
+            <h1>Write a review for this game!</h1>
+            <fieldset id="fieldset">
+
+                <form id="reviewForm">
+                    <textarea id="newReview" name="newReview" class="text-area" required> </textarea>
+                    <select name="rating" id="rating" class="rating-select " required>
+                        <option selected disabled hidden>Select Rating</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                    </select>
+                    <button type="submit" class="submit-review">Submit</button>
+                </form>
+            </fieldset>
+        </div>
+
+        <div class="avg-rating">
+           
+
+        </div>
+        <div class="userReview-section">
+
+            <!-- <div class="reviews">
+                <div class="user-info">
+                    <h1>username</h1>
+                    <img src="../image/spongebob.jpg" class="user-pic">
+                    <h2>5 Stars</h2>
+                    <p>created at : 12301230123</p>
+                </div>
+                <div class="user-review">
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores est, provident ea ipsum deserunt
+                        aspernatur nostrum corrupti explicabo aut totam eius optio id odio placeat expedita quod?
+                        Perferendis, eligendi optio?</p>
+                </div>
+            </div> -->
+           
+
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script>
+        window.onscroll = function () { myFunction() };
+        var navbar = document.getElementById("navbar");
+        var sticky = navbar.offsetTop;
+        function myFunction() {
+            if (window.pageYOffset >= sticky) {
+                navbar.classList.add("sticky")
+            } else {
+                navbar.classList.remove("sticky");
+            }
+        }
+    </script>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        const baseUrl = "http://localhost:8081";
+        const id = window.location.pathname;
+        const token = localStorage.getItem("token");
+        const loggedInUserID = parseInt(localStorage.getItem("loggedInUserID"));
+        const role = localStorage.getItem("role");
+        const username = localStorage.getItem("username")
+        var gameid = id.substring(6);
+        var selectedRating;
+        
+        if (token) {
+            console.log("set token to: " + token)
+            axios.defaults.headers.common['Authorization'] = "Bearer " + token;
+            if (role.localeCompare("admin") == 0) {
+                const liHtml = `
+                <li class="nav-li"><a class="nav-a admin">@${username}</a></li>
+                <li class="nav-li"><a class="nav-a admin" href="/adminPage">Admin Page</a></li>
+                <li style="float:right"><a id="logout">Logout</a></li>`;
+                $(".nav-ul").append(liHtml);
+            } else {
+                const liHtml = `<li class="nav-li"><a class="nav-a admin">@${username}</a></li>
+                <li style="float:right"><a id="logout">Logout</a></li>`;
+                $(".nav-ul").append(liHtml);
+            }
+        } else {
+            console.log("token is null")
+            axios.defaults.headers.common['Authorization'] = null;
+            
+            const liHtml = `<li class="nav-li"><a class="nav-a" href="/login">Login</a></li>
+            <li class="nav-li"><a class="nav-a" href="/register">Register</a></li>`;
+            $(".nav-ul").append(liHtml);
+            $("#fieldset").prop("disabled", true)
+            $    
+
+            
+        }
+
+        $("select").change(() => {
+            event.preventDefault()
+            selectedRating = document.getElementById("rating").value
+        })
+
+        axios.get(`${baseUrl}/game/${gameid}`)
+            .then((response) => {
+                const games = response.data[0];
+                console.log(games.gameImgUrl);
+                const postHtml = `
+                <div class="split-box">
+
+<div class="left-section">
+    <img class="left-img" src="../image/${games.gameImgUrl}.jpg">
+</div>
+
+<div class="right-section">
+    <div class="right-title">
+        <h2>${games.title}</h2>
+    </div>
+
+    <div class="right-desc">
+        <h3>Description</h3>
+        <p>${games.description}</p>
+    </div>
+
+    <div class="right-info">
+        <h4>Price</h4>
+        <p>$${games.price}</p>
+        <h4>Category</h4>
+        <p>${games.cat_name}</p>
+        <h4>Platform</h4>
+        <p>${games.platform}</p>
+        <h4>Year Released</h4>
+        <p>${games.year}</p>
+    </div>
+</div>
+</div>
+                    `;
+                $(".game-section").append(postHtml);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+
+            if(token){
+                
+            }
+        axios.get(`${baseUrl}/review/${gameid}`)
+            .then((response) => {
+                const review = response.data;
+                review.forEach((review) => {
+                    const postHtml = `
+                    <div class="reviews">
+                <div class="user-info">
+                    <h1>${review.username}</h1>
+                    <img src="../image/${review.picurl}.jpg" class="user-pic">
+                    <h2>${review.rating} <span class="fa fa-star checked"></span></h2>
+                    <p>Posted On :${review.created_at} </p>
+                </div>
+                <div class="user-review">
+                    <p>${review.content}</p>
+                </div>
+            </div>
+                    `;
+
+                    $(".userReview-section").append(postHtml);
+                });
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        //-----------------------------end of this func-------------------------------------------
+
+
+        axios.get(`${baseUrl}/getAverageReviewByID/${gameid}`)
+            .then((response) => {
+                const getAvg = response.data;
+                const avgRating = getAvg[0].rating;
+                var x = avgRating.toString()
+                var y = x.substring(0,4)
+                
+                const postHtml = `
+                <h1>Average Rating: </h1>
+            <h1>${y} <span class="fa fa-star checked"></span></h1>
+                    `;
+                $(".avg-rating").append(postHtml);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        //---------------------------------END OF THIS FUNC-----------------------------------
+        $("#reviewForm").submit((event) => {
+            event.preventDefault()
+            var ept = document.getElementById("newReview").value
+            if(ept.length>10){
+                var didUserEdit = false
+            axios.get(`${baseUrl}/getUserFromReview/${gameid}`)
+                .then((response) => {
+                    userReviewID = response.data
+
+                    for (var i = 0; i < userReviewID.length; i++) {
+                        if (loggedInUserID == userReviewID[i].user_id) {
+                            var didUserEdit = true
+                            break
+                        }
+                    }
+
+                    console.log(didUserEdit);
+                    if (didUserEdit) {
+                        const x = document.getElementById("newReview").value
+                        const requestBody = {
+                            content: x,
+                            rating: selectedRating,
+                            uid: loggedInUserID,
+                            gid: gameid
+                        }
+                        axios.put(`${baseUrl}/updateReview`, requestBody)
+                            .then((response) => {
+                                window.location.reload()
+
+                            })
+
+                    } else {
+                        const x = document.getElementById("newReview").value
+                        const requestBody = {
+                            content: x,
+                            rating: selectedRating,
+                            uid: loggedInUserID,
+                            gid: gameid
+                        }
+                        axios.post(`${baseUrl}/newReview`, requestBody)
+                            .then((response) => {
+                                window.location.reload()
+
+                            })
+                    }
+
+
+                })
+
+            } else {
+                alert("minimum 10 words")
+            }
+            
+
+
+
+        })
+
+        $("#logout").click(e => {
+            const token = localStorage.getItem("token");
+            const loggedInUserID = parseInt(localStorage.getItem("loggedInUserID"));
+
+            localStorage.removeItem("token");
+            localStorage.removeItem("loggedInUserID");
+            localStorage.removeItem("role")
+            window.location.reload();
+        });
+
+
+
+    </script>
+</body>
+
+</html>

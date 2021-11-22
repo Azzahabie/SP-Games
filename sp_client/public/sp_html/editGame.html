@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Game</title>
+</head>
+
+<body style="background-image:url(../image/krustykrabs.png) ;">
+    Edit Game
+    <div id="editGame">
+
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    const id = window.location.pathname;
+    const gameid = id.substring(10);
+    const baseUrl = "http://localhost:8081";
+    var defCatID = null;
+    var defPlatform = null;
+
+    axios.get(`${baseUrl}/gameWithCat/${gameid}`)
+        .then((response) => {
+            const games = response.data[0];
+            const postHtml = `
+                    <form id="editGameForm" style="display: flex;flex-direction: column;">
+            <label for="gameTitle">Title: </label>
+            <input type="text" id="gameTitle" value="${games.title}">
+            <label for="gameDescription">Description: </label>
+            <textarea type="text" id="gameDescription">${games.description}</textarea>
+            <label for="gameCategory">Category: </label>
+            <select name="catList" id="categoryList">
+                <option value="${games.cat_id}" selected>${games.cat_name}</option>
+            </select>
+            <label for="gamePlatform">Platform: </label>
+            <select name="platforms" id="platformMenu">
+                <option value="${games.platform} selected">${games.platform}</option>
+            </select>
+            <label for="gameYear">Year Released: </label>
+            <input type="text" id="gameYear" value="${games.year}">
+            <label for="gamePrice">Price: </label>
+            <input type="number" id="gamePrice" value="${games.price}">
+            <button type="submit" onClick="editFunc()">SUBMIT</button>
+        </form>
+                        `;
+            $("#editGame").append(postHtml);
+            defCatID = games.cat_id
+            defPlatform = games.platform
+        })
+        .then(() => {
+            axios.get(`${baseUrl}/getCat`)
+                .then((response) => {
+                    const catList = response.data;
+                    catList.forEach((list) => {
+                        if (defCatID != list.cat_id) {
+                            console.log("setting cat");
+                            const htmllist = `
+                    <option value="${list.cat_id}">${list.cat_name}</option>
+                            `;
+                            $("#categoryList").append(htmllist);
+                        }
+                    });
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        })
+        .then(() => {
+            axios.get(`${baseUrl}/platform`)
+                .then((response) => {
+                    const platformData = response.data;
+                    platformData.forEach((platformData) => {
+                        if (defPlatform != platformData.platform) {
+                            const postHtml = `
+                        <option value="${platformData.platform}">${platformData.platform}</option>
+                            `;
+                            $("#platformMenu").append(postHtml);
+                        }
+                    });
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+
+
+</script>
+<script>
+    function editFunc(){
+        $("#editGameForm").submit((event) => {
+        event.preventDefault();
+        const gameTitle = $("#gameTitle").val();
+        const gameDescription = $("#gameDescription").val();
+        const categoryList = $("#categoryList").val();
+        const platformMenu = $("#platformMenu").val();
+        const gameYear = $("#gameYear").val();
+        const gamePrice = $("#gamePrice").val();
+
+        const requestBody = {
+            title: gameTitle,
+            description: gameDescription,
+            price: gamePrice,
+            platform: platformMenu,
+            category_id: categoryList,
+            year: gameYear,
+        };
+        axios.put(`${baseUrl}/game/${gameid}`, requestBody)
+            .then((response) => {
+                alert("sucessfully edited Bitch")
+                location.reload()
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+
+    })   
+    } 
+</script>
+
+</html>
