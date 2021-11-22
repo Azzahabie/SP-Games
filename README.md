@@ -1,7 +1,7 @@
 # SP-Games
 Sp Games Full-stack website
 
-My first full stack website using javascript & MYSQL
+My first full stack website using HTML,CSS,javascript & MYSQL
 
 #APIs
 
