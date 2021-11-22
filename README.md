@@ -1,6 +1,8 @@
 # SP-Games
 Sp Games Full-stack website
 
+View it here (https://www.azzahabie.dev/my_oldSite/spGames.html)
+
 My first full stack website using HTML,CSS,javascript & MYSQL
 
 #APIs
