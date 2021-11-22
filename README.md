@@ -4,40 +4,49 @@ Sp Games Full-stack website
 My first full stack website using javascript & MYSQL
 
 #APIs
+
 HOMEPAGE
-/getGames 
-/getGamesByPlatform/? 
-/platform 
-/getGamesBySearch/searchfilter 
-/game/gameID 
-/getGameByPrice/price
+
+- /getGames 
+- /getGamesByPlatform/? 
+- /platform 
+- /getGamesBySearch/searchfilter 
+- /game/gameID 
+- /getGameByPrice/price
 
 DETAIL GAME
-/game/id
-/review/gameid
-/getAverageReviewByID/gameid
-/getUserFromReview/gameid
+
+- /game/id
+- /review/gameid
+- /getAverageReviewByID/gameid
+- /getUserFromReview/gameid
 
 LOGIN
-/login/
+
+- /login/
 
 REGISTER
-/users/
+
+- /users/
 
 addCat
-/getcat
-/insertCat
+
+- /getcat
+- /insertCat
 
 adminpage
-none
+
+- none
 
 gamecontrol
-/getCat
-/platform
-/getonlyGames
-/insertGame
+
+- /getCat
+- /platform
+- /getonlyGames
+- /insertGame
 
 adminregister
-/adminReg
+
+- /adminReg
 
 
